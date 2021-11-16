@@ -1,0 +1,17 @@
+h1 {
+    text-align: center;
+    color: rgb(117, 44, 44);
+}
+
+code {
+    background-color: #d0d3d4;
+    font: 12;
+}
+
+.col-10 li {
+    margin-bottom: 15px;
+}
+
+.note {
+    color: rgb(0, 128, 0);
+}

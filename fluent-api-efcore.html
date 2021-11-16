@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Entity Framework 6</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/hoanganhpham.rasta.github.io/style.css">
+
+</head>
+
+<body>
+
+    <div class=".container-fluid">
+        <h1>Fluent API in EF Core</h1>
+        <div class="row">
+            <div class="col-2">
+                <ul style="list-style: none;">
+                    <li>
+                        <ul>
+                            <b>Entity Framework</b>
+                            <li>
+                                <a href="/hoanganhpham.rasta.github.io/index.html">Fluent API Basic</a>
+                            </li>
+                            <li>
+                                <a href="/hoanganhpham.rasta.github.io/fulent-api-relationships.html">Fluent API Relationships</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <ul>
+                            <b>Entity Framework Core</b>
+                            <li>
+                                <a href="/hoanganhpham.rasta.github.io/note-for-ef-core.html">Note</a>
+                            </li>
+                            <li>
+                                <a href="/hoanganhpham.rasta.github.io/fluent-api-efcore.html">Fluent API EFCore</a>
+                            </li>
+                            <li>
+                                <a href="/hoanganhpham.rasta.github.io/fluent-api-relationships-efcore.html">Fluent API Relationships EFCore</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-10 ">
+                <p>EF Core Fluent API</p>
+                <ul>
+                    <strong>
+                       Có 3 phương pháp cấu hình
+                   </strong>
+                    <li>Model wide configuration (database)</li>
+                    <li>Entity Configuration (table)</li>
+                    <li>Property configuration</li>
+                </ul>
+                <div>
+                    <p>Model-wide configuration</p>
+                    <p>Các thuộc tính Model wide được áp dụng cho toàn bộ model trong database</p>
+                    <code>
+                        modelBuilder.HasDefaultSchema("Admin");
+                    </code>
+                    <p> ex: Ignore Loại bỏ thực thể.</p>
+                </div>
+                <div>
+                    <p>Entity Configuration</p>
+                    <p>Cấu hình của thực thể (Table) được thực hiện bằng phương thức Entity.</p>
+                    <code>modelBuilder.Entity<<span>Employee</span>>().HasKey(t => t.EmployeeID);</code>
+                </div>
+                <div>
+                    <p>Property Configuration</p>
+                    <p>Cấu hình attributes của property</p>
+                    <code> modelBuilder.Entity<<span>Employee</span>>().Property(b => b.Name).HasColumnName("EmployeeName ");</code>
+                </div>
+                <div>
+                    <p>Navigation Properties</p>
+                    <img src="/hoanganhpham.rasta.github.io/Navigational-Properties-in-EF-Core.png" alt="">
+                    <p>Reference Object (If the relationship is one or Zero-or-One)
+                        <br> In the above example, the Department property in Employee class
+                        <br> Collection (If the relationship is Many)
+                        <br> The Employees Collection in the Department Class
+                    </p>
+                </div>
+                <strong>HasMany / WithMany chưa được hỗ trợ trong EF Core (.Net-5_14/11/2021)</strong>
+            </div>
+        </div>
+    </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js "></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js "></script>
+</body>
+
+</html>

@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Entity Framework 6</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/hoanganhpham.rasta.github.io/style.css">
+
+</head>
+
+<body>
+
+    <div class=".container-fluid">
+        <h1>Fluent API Relationships</h1>
+        <div class="row">
+            <div class="col-2">
+                <ul style="list-style: none;">
+                    <li>
+                        <ul>
+                            <b>Entity Framework</b>
+                            <li>
+                                <a href="/hoanganhpham.rasta.github.io/index.html">Fluent API Basic</a>
+                            </li>
+                            <li>
+                                <a href="/hoanganhpham.rasta.github.io/fulent-api-relationships.html">Fluent API Relationships</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <ul>
+                            <b>Entity Framework Core</b>
+                            <li>
+                                <a href="/hoanganhpham.rasta.github.io/note-for-ef-core.html">Note</a>
+                            </li>
+                            <li>
+                                <a href="/hoanganhpham.rasta.github.io/fluent-api-efcore.html">Fluent API EFCore</a>
+                            </li>
+                            <li>
+                                <a href="/hoanganhpham.rasta.github.io/fluent-api-relationships-efcore.html">Fluent API Relationships EFCore</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-10 ">
+                <h4>
+                    Relationship in Entity Framework Core
+                </h4>
+                <div>
+                    <ol>
+                        <li>
+                            <strong>One-to-Many</strong>
+                            <p>1 Department có N Employee nhưng 1 Employee có duy nhất 1 Department</p>
+                            <code>
+                                <p>Employee--->Derpartment</p>
+                                modelBuilder.Entity<<span>Employee</span>>()
+                                <br>
+                                .HasOne<<span>Department</span>>(e => e.Department)
+                                <br>
+                                .WithMany(d => d.Employees)
+                                <br>
+                                .HasForeignKey(e => e.DeptID) 
+                                <br>
+                                .IsRequired(false);
+                                <hr>
+                                <p>Derpartment--->Employee</p>
+                                modelBuilder.Entity<<span>Department</span>>()
+                                <br>
+                                .HasMany(d => d.Employees)
+                                <br>
+                                .WithOne(e => e.Department)
+                                <br>
+                                .HasForeignKey(e => e.DepartmentID)
+                                <br>
+                                .IsRequired();
+                                <hr>
+                                .IsRequired() tương tự HasRequired() hoặc WithRequired() trong Enity framework
+                                <br>
+                                .IsRequired(false) tương tự HasOptional() hoặc WithOptional() trong Enity framework
+                            </code>
+                        </li>
+                        <li>
+                            <strong>Many-to-Many</strong>
+                            <br>
+                            <img src="/hoanganhpham.rasta.github.io/many-to-many.png" alt="">
+                            <p>
+                                Trong các phiên bản cũ hơn của Entity Framework được tạo tự động bảng quan hệ. Tính năng này không được hỗ trợ trong EF Core
+                            </p>
+                            <p>HasMany/WithMany chưa hỗ trợ trong EF Core</p>
+                            <p>Trường hợp 1: Course có quan hệ N-N với Tag</p>
+                            <code>
+                                <strong>Không thể viết như sau: </strong>
+                                <br>
+                                modelBuilder.Entity<<span>Course</span>>()
+                                <br>
+                                .HasMany(c => c.Tags) <span class="note">---Table1-->Table2</span>
+                                <br>
+                                .WithMany(t => t.Course) <span class="note">---Table2-->Table1</span>
+                                <br>
+                                .Map(m => m.ToTable("tbl_CourseTags"))   <span class="note">---Đặt tên cho bảng quan hệ. Mặc định 2 tên Class ghép lại với nhau</span>
+                            </code>
+                            <hr>
+                            <p>Trường hợp 2 :Employee có quan hệ N-N với Project</p>
+                            <p>Tạo bảng EmployeesInProject sau đó chuyển quan hệ thành 1-N-1</p>
+                            <code>
+                                modelBuilder.Entity<EmployeesInProject>()
+                                .HasKey(e => new { e.EmployeeID, e.ProjectID });
+                            </code>
+                            <br>
+                            <code>
+                                modelBuilder.Entity<EmployeesInProject>()
+                                    .HasOne<Employee>(e => e.Employee)
+                                    .WithMany(p => p.EmployeesInProject);
+                            </code>
+                            <br>
+                            <code>
+                                modelBuilder.Entity<EmployeesInProject>()
+                                    .HasOne<Project>(e => e.Project)
+                                    .WithMany(p => p.EmployeesInProject);
+                            </code>
+                        </li>
+                        <li>
+                            <strong>One-to-One</strong>
+                            <br>
+                            <img src="/hoanganhpham.rasta.github.io/One-to-One-Relationship-using-HasOne-WithOne-Fluent-API.png" alt="">
+                            <p>Trong mối quan hệ One-to-One, thì trước tiên phải cần xác định table nào là Principal (Chính),
+                                <br> table nào là Dependent (Phụ thuộc) table. Đối với quan hệ One-to-One: ta phải bắt buộc insert record cho table A trước rồi sau đó mới insert record vào table B.
+                                <br> ==> Lúc đó, table A chính là Principal , table B chính là Dependent.</p>
+
+                            <br>
+                            <p>
+                                Cấu hình trên table Principal:
+                            </p>
+                            <code>
+                                modelBuilder.Entity<EmployeeAddress>()
+                                    .HasKey(s => s.EmployeeID);
+                                <br>
+                                 modelBuilder.Entity<Employee>()
+                                     .HasOne<EmployeeAddress>(p => p.EmployeeAddress)
+                                     .WithOne(s => s.Employee);
+                            </code>
+                            <p>
+                                Cấu hình trên table Dependent:
+                            </p>
+                            <code>
+                                modelBuilder.Entity<EmployeeAddress>()
+                                    .HasKey(s => s.EmployeeID);
+                          <br>
+                                modelBuilder.Entity<EmployeeAddress>()
+                                    .HasOne<Employee>(p => p.Employee)
+                                    .WithOne(s => s.EmployeeAddress);
+                            </code>
+                        </li>
+                    </ol>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js "></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js "></script>
+</body>
+
+</html>

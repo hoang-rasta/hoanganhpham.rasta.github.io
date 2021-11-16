@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Entity Framework 6</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/hoanganhpham.rasta.github.io/style.css">
+
+</head>
+
+<body>
+
+    <div class=".container-fluid">
+        <h1>Fluent API Relationships</h1>
+        <div class="row">
+            <div class="col-2">
+                <ul style="list-style: none;">
+                    <li>
+                        <ul>
+                            <b>Entity Framework</b>
+                            <li>
+                                <a href="/hoanganhpham.rasta.github.io/index.html">Fluent API Basic</a>
+                            </li>
+                            <li>
+                                <a href="/hoanganhpham.rasta.github.io/fulent-api-relationships.html">Fluent API Relationships</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <ul>
+                            <b>Entity Framework Core</b>
+                            <li>
+                                <a href="/hoanganhpham.rasta.github.io/note-for-ef-core.html">Note</a>
+                            </li>
+                            <li>
+                                <a href="/hoanganhpham.rasta.github.io/fluent-api-efcore.html">Fluent API EFCore</a>
+                            </li>
+                            <li>
+                                <a href="/hoanganhpham.rasta.github.io/fluent-api-relationships-efcore.html">Fluent API Relationships EFCore</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-10 ">
+                <h4>
+                    Entity Framework sử dụng navigational properties để mô tả mối quan hệ giữa hai loại thực thể
+                </h4>
+                <h6>
+                    Reference Object (If the relationship is one or Zero-or-One)
+                    <br>Collection (If the relationship is Many)
+                </h6>
+                <div>
+                    <p>Table1 và Table2</p>
+                    <img src="/hoanganhpham.rasta.github.io/rightside.png" alt="">
+                    <p>
+                        Xét quan hệ từ trái sang phải Table1-->Table2
+                    </p>
+                    <ul>
+                        <li>HasMany() : <em>nếu Table1 có quan hệ <strong>nhiều record</strong> với Table 2, thì thuộc tính đó là HasMany()</em></li>
+                        <li>HasRequired(): <em>nếu Table1 chỉ quan hệ <strong>1 record</strong> với Table 2, thì thuộc tính đó là HasRequired()</em></li>
+                        ( khóa ngoại không null, có nghĩa là kiểu thực thể và mối quan hệ của nó phải được tạo nếu không dữ liệu sẽ không được lưu vào cơ sở dữ liệu)
+                        <li>HasOptional(): <em>nếu Table1 có quan hệ <strong>0 hoặc 1 record</strong> với Table2, thì thuộc tính đó là HasOptional()</em></li>
+                        (Phương thức này tạo khóa ngoại có thể nullable. Điều này có nghĩa là bạn có thể lưu dữ liệu vào cơ sở dữ liệu mà không cần tạo mối quan hệ này)
+                    </ul>
+                    <hr>
+                    <img src="/hoanganhpham.rasta.github.io/leftside.png" alt="">
+                    <p>
+                        Xét quan hệ từ phải sang trái Table2-->Table1
+                    </p>
+                    <ul>
+                        <li>WithMany() : <em>nếu Table2 có quan hệ <strong>nhiều record</strong> với Table 1, thì thuộc tính đó là WithMany()</em></li>
+                        <li>WithRequired(): <em>nếu Table2 chỉ quan hệ <strong>1 record</strong> với Table1, thì thuộc tính đó là WithRequired()</em></li>
+                        <li>WithOptional(): <em>nếu Table2 có quan hệ <strong>0 hoặc 1 record</strong> với Table1, thì thuộc tính đó là WithOptional()</em></li>
+                    </ul>
+                </div>
+                <div>
+                    <ol>
+                        <li>
+                            <strong>One-to-Many</strong>
+                            <br>
+                            <img src="/hoanganhpham.rasta.github.io/one-to-many.png" alt="">
+                            <p>1 Author có N Course nhưng 1 Course có duy nhất 1 Author</p>
+                            <code>
+                                modelBuilder.Entity<<span>Author</span>>()
+                                <br>
+                                .HasMany(a => a.Courses) <span class="note">---Table1-->Table2</span>
+                                <br>
+                                .WithRequired(c => c.Author)  <span class="note">---Table2-->Table1</span>
+                                <br>
+                                .HasForeignKey(c => c.AuthorId)    <span class="note">---Khoá ngoại</span>
+                            </code>
+                        </li>
+                        <li>
+                            <strong>Many-to-Many</strong>
+                            <br>
+                            <img src="/hoanganhpham.rasta.github.io/many-to-many.png" alt="">
+                            <p>Course có quan hệ N-N với Tag</p>
+                            <code>
+                                modelBuilder.Entity<<span>Course</span>>()
+                                <br>
+                                .HasMany(c => c.Tags) <span class="note">---Table1-->Table2</span>
+                                <br>
+                                .WithMany(t => t.Course) <span class="note">---Table2-->Table1</span>
+                                <br>
+                                .Map(m => m.ToTable("tbl_CourseTags"))   <span class="note">---Đặt tên cho bảng quan hệ. Mặc định 2 tên Class ghép lại với nhau</span>
+                            </code>
+                        </li>
+                        <li>
+                            <strong>One-to-Zero/One</strong>
+                            <br>
+                            <img src="/hoanganhpham.rasta.github.io/one-to-zero-one.png" alt="">
+                            <p>1 Course có 0 hoặc 1 Caption, 1 Caption sẽ phải thuộc về 1 Course</p>
+                            <code>
+                                modelBuilder.Entity<<span>Course</span>>()
+                                <br>
+                                .HasOptional(c => c.Caption)   <span class="note">---Table1-->Table2</span>
+                                <br>
+                                .WithRequired(t => t.Course)  <span class="note">---Table2-->Table1</span>
+                            </code>
+                        </li>
+                        <li>
+                            <strong>One-to-One</strong>
+                            <br>
+                            <img src="/hoanganhpham.rasta.github.io/one-to-one1.png" alt="">
+                            <p>Trong mối quan hệ One-to-One, thì trước tiên phải cần xác định table nào là Principal (Chính),
+                                <br> table nào là Dependent (Phụ thuộc) table. Đối với quan hệ One-to-One: ta phải bắt buộc insert record cho table A trước rồi sau đó mới insert record vào table B.
+                                <br> ==> Lúc đó, table A chính là Principal , table B chính là Dependent.</p>
+
+                            <br>
+                            <p>
+                                Cấu hình trên table Principal:
+                            </p>
+                            <code>
+                                modelBuilder.Entity<<span>Course</span>>()
+                                <br>
+                                .HasRequired(c => c.Cover)   <span class="note">---Table1-->Table2</span>
+                                <br>
+                                .WithRequiredPrincipal(c => t.Course)  <span class="note">---Table2-->Table1</span>
+                            </code>
+                            <p>
+                                Cấu hình trên table Dependent:
+                            </p>
+                            <code>
+                                modelBuilder.Entity<<span>Cover</span>>()
+                                <br>
+                                .HasRequired(c => c.Course)   <span class="note">---Table1-->Table2</span>
+                                <br>
+                                .WithRequiredDependent(c => c.Cover)  <span class="note">---Table2-->Table1</span>
+                            </code>
+                        </li>
+                    </ol>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js "></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js "></script>
+</body>
+
+</html>

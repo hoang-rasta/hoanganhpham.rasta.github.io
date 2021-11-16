@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Entity Framework 6</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/hoanganhpham.rasta.github.io/style.css">
+</head>
+
+<body>
+
+    <div class=".container-fluid">
+        <h1>Fluent API Basic</h1>
+        <div class="row">
+            <div class="col-2">
+                <ul style="list-style: none;">
+                    <li>
+                        <ul>
+                            <b>Entity Framework</b>
+                            <li>
+                                <a href="/hoanganhpham.rasta.github.io/index.html">Fluent API Basic</a>
+                            </li>
+                            <li>
+                                <a href="/hoanganhpham.rasta.github.io/fulent-api-relationships.html">Fluent API Relationships</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <ul>
+                            <b>Entity Framework Core</b>
+                            <li>
+                                <a href="/hoanganhpham.rasta.github.io/note-for-ef-core.html">Note</a>
+                            </li>
+                            <li>
+                                <a href="/hoanganhpham.rasta.github.io/fluent-api-efcore.html">Fluent API EFCore</a>
+                            </li>
+                            <li>
+                                <a href="/hoanganhpham.rasta.github.io/fluent-api-relationships-efcore.html">Fluent API Relationships EFCore</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-10 ">
+                <ol>
+                    <li>
+                        <strong>ToTable--Đặt tên bảng cho loại thực thể</strong>
+                        <br>
+                        <code>modelBuilder.Entity<<span>Employee</span>>().Totable("tbl_Employee ");</code>
+                    </li>
+
+                    <li>
+                        <strong>ToTable-- Table Name and Schema</strong>
+                        <br>
+                        <code>modelBuilder.Entity<<span>Employee</span>>().Totable("tbl_Employee ","Admin ");</code> //
+                        <!-- <img src="https://www.tektutorialshub.com/wp-content/uploads/2018/10/Fluent-API-Example-Application.png " alt=" "> -->
+                    </li>
+
+                    <li>
+                        <strong>HasKey--Cấu hình khóa chính cho loại thực thể đã chọn</strong>
+                        <br>
+                        <code>modelBuilder.Entity<<span>Employee</span>>().HasKey(t => t.EmployeeID);</code>
+                    </li>
+
+                    <li>
+                        <strong>Composite Keys--Cấu hình khóa chính nhiều trường cho loại thực thể đã chọn</strong>
+                        <br>
+                        <code>modelBuilder.Entity<<span>OrderDetail</span>>.HasKey(t => new {t.OrderId, t.OrderItemId});</code>
+                    </li>
+
+                    <li>
+                        <strong>Column Name</strong>
+                        <br>
+                        <code> modelBuilder.Entity<<span>Employee</span>>().Property(b => b.Name).HasColumnName("EmployeeName ");</code>
+                    </li>
+
+                    <li>
+                        <strong>Column Type</strong>
+                        <br>
+                        <code> modelBuilder.Entity<Book>().Property(b => b.Title).HasColumnType("varchar ");</code>
+                    </li>
+
+                    <li>
+                        <strong>Column Orders -- Định cấu hình thứ tự cột xuất hiện trong bảng cơ sở dữ liệu. Nó cũng được sử dụng trong khi tạo khóa Composite Keys để chỉ định thứ tự khóa.</strong>
+                        <br>
+                        <code>modelBuilder.Entity<<span>Employee</span>>().Property(t => t.EmployeeID).HasColumnOrder(1);</code>
+                    </li>
+
+                    <li>
+                        <strong>Database Generated</strong>
+                        <br>
+                        <code>modelBuilder.Entity<<span>Employee</span>>().Property(t => t.EmployeeID)
+                            .HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);</code>
+                        <br>
+                        <code>modelBuilder.Entity<<span>Employee</span>>().Property(t => t.EmployeeID)
+                            .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed);</code>
+
+                        <br>(giá trị của thuộc tính sẽ được tạo bởi cơ sở dữ liệu khi giá trị được lưu lần đầu tiên
+                        <br>và sau đó được tạo lại mỗi khi giá trị được cập nhật.)
+
+                        <br>
+                        <code>modelBuilder.Entity<<span>Employee</span>>().Property(t => t.EmployeeID)
+                            .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);</code>
+                    </li>
+                    <li>
+                        <strong>Not Null</strong>
+                        <br>
+                        <code>modelBuilder.Entity<<span>Employee</span>>().Property(t => t.EmployeeName).IsRequired()</code>
+                    </li>
+                    <li>
+                        <strong>Null</strong>
+                        <br>
+                        <code>modelBuilder.Entity<<span>Employee</span>>().Property(t => t.Heigth).IsOptional()</code>
+                    </li>
+                    <li>
+                        <strong>HasMaxLength--Limit the length--Quy định độ dài tối đa của thuộc tính.</strong>
+                        <br>
+                        <code>modelBuilder.Entity<<span>Employee</span>>().Property(t => t.Heigth).HasMaxLength(255)</code>
+                        <br>
+                        <strong>IsMaxLength--Max the length--Thuộc tính để cho phép độ dài tối đa được hỗ trợ bởi nhà cung cấp cơ sở dữ liệu</strong>
+                        <br>
+                        <code>modelBuilder.Entity<<span>Employee</span>>().Property(t => t.Heigth).IsMaxLength</code>
+                    </li>
+                    <li>
+                        <strong>IsFixedLength-- Chiều dài cố định-- Phương thức này chuyển đổi kiểu cột nvarchar thành nchar</strong>
+                        <br>
+                        <code>modelBuilder.Entity<<span>Department</span>>().Property(p => p.Manager).HasMaxLength(50).IsFixedLength();</code>
+                    </li>
+                    <li>
+                        <strong>HasPrecision-- sử dụng để định cấu hình Độ chính xác và tỷ lệ của thuộc tính Decimal</strong>
+                        <br>
+                        <code>modelBuilder.Entity<<span>Project</span>>().Property(p => p.Budget).HasPrecision(10, 2);</code>
+                    </li>
+
+                </ol>
+            </div>
+        </div>
+    </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js "></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js "></script>
+</body>
+
+</html>
